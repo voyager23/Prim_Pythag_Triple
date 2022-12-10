@@ -19,15 +19,26 @@ class PPT():
 	B = [[1,2,2],[2,1,2],[2,2,3]]
 	C = [[-1,2,2],[-2,1,2],[-2,2,3]]
 	ABC = [A,B,C]
+	
+	# Matrix due to H Lee Price
+	PA = [[2,1,-1],[-2,2,2],[-2,1,3]]
+	PB = [[2,1,1],[2,-2,2],[2,-1,3]]
+	PC = [[2,-1,1],[2,2,2],[2,1,3]]
+	
+	# Matrix for Euclid sequence
+	E = [[2,-1],[1,0]]
+
 	# initial primitive
 	p = [3,4,5]
-	# output vectors
+	# output list of children + root triple
 	q = [[0,0,0],[0,0,0],[0,0,0],[]]
 	
 	
 	def __init__(self,triple = [3,4,5]):
 		if self.is_ppt(triple):
 			self.p = triple
+		else:
+			print("Input data is invalid. Using [3,4,5]")
 	
 	def is_ppt(self,triple):
 		a = triple[0]
@@ -46,7 +57,7 @@ class PPT():
 		# Return a list of 3 child triples and root triple
 		if self.is_ppt(triple):
 			self.p = triple
-			if selector == 'B':
+			if selector == 'B':		# Matrix due to F.M.J. Barning
 				for row in range(3):
 					self.q[0][row] = 0
 					self.q[1][row] = 0
@@ -63,29 +74,65 @@ class PPT():
 					self.q[0] ^= self.q[1]
 				return self.q
 							
-			elif selector == 'P':
-				return 0
-				
+			elif selector == 'P':	# Matrix due to H Lee Price
+				for row in range(3):
+					self.q[0][row] = 0
+					self.q[1][row] = 0
+					self.q[2][row] = 0
+					for col in range(3):
+						self.q[0][row] += self.PA[row][col] * self.p[col]
+						self.q[1][row] += self.PB[row][col] * self.p[col]
+						self.q[2][row] += self.PC[row][col] * self.p[col]
+				self.q[3] = triple
+				# Adjust format of result if required
+				if self.q[0] > self.q[1]:
+					self.q[0] ^= self.q[1]
+					self.q[1] ^= self.q[0]
+					self.q[0] ^= self.q[1]
+				return self.q
+							
 			else:
+				print("Matrix selector unknown.")
 				return 0
 		else:
 			print(triple, "Input triple is not primitive")
 			return 0
+			
+	def is_valid_mn(self, mn):
+		# expect list [m,n]
+		m = mn[0]
+		n = mn[1]
+		return ((m > n) and gcd(m,n) == 1 and (m%2 != n%2))
+	
+	def euclid_sequence(self, mn, count = 1):
+		self.q.clear()
+		if self.is_valid_mn(mn):
+			m = mn[0]	# convenience variables
+			n = mn[1]
+			while count:
+				t = [0,0]
+				self.q.append([m*m - n*n , 2*m*n , m*m + n*n])
+				# update m & n values by matrix multiply
+				t[0] = self.E[0][0]*m + self.E[0][1]*n
+				t[1] = self.E[1][0]*m + self.E[1][1]*n
+				m = t[0]
+				n = t[1]
+				count -=1
+			return self.q
+		else:
+			print("m and/or n invalid")
+			return self.q
 		
-		
-		return 0
-
 def main(args):
 	
 	# Test code goes here
 	ppt = PPT()
-	print(ppt.gen_child_triples([3,4,5],'B'))
+	print(ppt.gen_child_triples([3,4,5],'B'))	
+	print(ppt.gen_child_triples([5,12,13],'P'))	
+	print(ppt.gen_child_triples([20,21,29],'B'))	
+	print(ppt.gen_child_triples([8,15,17],'P'))
 	
-	print(ppt.gen_child_triples([5,12,13],'B'))
-	
-	print(ppt.gen_child_triples([20,21,29],'B'))
-	
-	print(ppt.gen_child_triples([8,15,17],'B'))
+	print(ppt.euclid_sequence([2,1],5))
 	
 	return 0
 
