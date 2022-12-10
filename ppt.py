@@ -26,8 +26,9 @@ class PPT():
 	PC = [[2,-1,1],[2,2,2],[2,1,3]]
 	
 	# Matrix for Euclid sequence
-	E = [[2,-1],[1,0]]
-	E = [[2,1],[1,0]]
+	EA = [[2,-1],[1,0]]
+	EB = [[2,1],[1,0]]
+	EC = [[1,2],[0,1]]
 	
 
 	# initial primitive
