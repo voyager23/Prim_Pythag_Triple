@@ -22,11 +22,10 @@ class PPT():
 	# initial primitive
 	p = [3,4,5]
 	# output vectors
-	q = [[0,0,0],[0,0,0],[0,0,0]]
+	q = [[0,0,0],[0,0,0],[0,0,0],[]]
 	
 	
-	def __init__(self, triple):
-		# expect 3 integers
+	def __init__(self,triple = [3,4,5]):
 		if self.is_ppt(triple):
 			self.p = triple
 	
@@ -44,22 +43,33 @@ class PPT():
 			return True
 			
 	def gen_child_triples(self, triple, selector='B'):
-		self.p = triple
-		if selector == 'B':
-			for row in range(3):
-				self.q[0][row] = 0
-				self.q[1][row] = 0
-				self.q[2][row] = 0
-				for col in range(3):
-					self.q[0][row] += self.A[row][col] * self.p[col]
-					self.q[1][row] += self.B[row][col] * self.p[col]
-					self.q[2][row] += self.C[row][col] * self.p[col]
-			return self.q
-						
-		elif selector == 'P':
-			return 0
-			
+		# Return a list of 3 child triples and root triple
+		if self.is_ppt(triple):
+			self.p = triple
+			if selector == 'B':
+				for row in range(3):
+					self.q[0][row] = 0
+					self.q[1][row] = 0
+					self.q[2][row] = 0
+					for col in range(3):
+						self.q[0][row] += self.A[row][col] * self.p[col]
+						self.q[1][row] += self.B[row][col] * self.p[col]
+						self.q[2][row] += self.C[row][col] * self.p[col]
+				self.q[3] = triple
+				# Adjust format of result if required
+				if self.q[0] > self.q[1]:
+					self.q[0] ^= self.q[1]
+					self.q[1] ^= self.q[0]
+					self.q[0] ^= self.q[1]
+				return self.q
+							
+			elif selector == 'P':
+				return 0
+				
+			else:
+				return 0
 		else:
+			print(triple, "Input triple is not primitive")
 			return 0
 		
 		
@@ -68,14 +78,14 @@ class PPT():
 def main(args):
 	
 	# Test code goes here
-	ppt = PPT([3,4,5])
-	print([3,4,5]+ppt.gen_child_triples([3,4,5],'B'))
+	ppt = PPT()
+	print(ppt.gen_child_triples([3,4,5],'B'))
 	
-	print([5,12,13],ppt.gen_child_triples([5,12,13],'B'))
+	print(ppt.gen_child_triples([5,12,13],'B'))
 	
-	print([20,21,29],ppt.gen_child_triples([20,21,29],'B'))
+	print(ppt.gen_child_triples([20,21,29],'B'))
 	
-	print([8,15,17],ppt.gen_child_triples([8,15,17],'B'))
+	print(ppt.gen_child_triples([8,15,17],'B'))
 	
 	return 0
 
