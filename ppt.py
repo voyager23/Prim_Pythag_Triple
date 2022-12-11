@@ -11,7 +11,7 @@
 #			YouTube, Mathologer
 #
 
-from math import gcd
+from math import gcd, sqrt
 
 class PPT():
 	# Matrix due to F.M.J. Barning
@@ -106,7 +106,35 @@ class PPT():
 		m = mn[0]
 		n = mn[1]
 		return ((m > n) and gcd(m,n) == 1 and (m%2 != n%2))
-	
+		
+	def recover_mn(self, triple):
+		# a = m^2 - n^2		b = 2mn		c = m^2 + n^2
+		if self.is_ppt(triple):
+			m = sqrt((triple[0]+triple[2]) / 2)
+			n = triple[1]/(2*m)
+			return [int(m),int(n)]
+			
+		else:
+			print("Recover_mn invalid triple.")
+			return [0,0]
+			
+	def euclid_triples(self, triple):
+		mn = self.recover_mn(triple)	#[m,n]
+		self.q = [[0,0,0],[0,0,0],[0,0,0],[]]
+		child_mn = [[0,0],[0,0],[0,0]]
+		for row in range(2):
+			for col in range(2):
+				child_mn[0][row] += self.EA[row][col] * mn[col]
+				child_mn[1][row] += self.EB[row][col] * mn[col]
+				child_mn[2][row] += self.EC[row][col] * mn[col]
+		for i in range(3):
+			self.q[i][0] = child_mn[i][0]**2 - child_mn[i][1]**2			
+			self.q[i][1] = 2 * child_mn[i][0] * child_mn[i][1]			
+			self.q[i][2] = child_mn[i][0]**2 + child_mn[i][1]**2
+		return self.q			
+			
+			
+	'''
 	def euclid_sequence(self, mn, count = 1):
 		self.q.clear()
 		if self.is_valid_mn(mn):
@@ -125,17 +153,18 @@ class PPT():
 		else:
 			print("m and/or n invalid")
 			return self.q
+	'''
 		
 def main(args):
 	
 	# Test code goes here
 	ppt = PPT()
-	print(ppt.gen_child_triples([3,4,5],'B'))	
+	print(ppt.gen_child_triples([3,4,5],'P'))	
 	print(ppt.gen_child_triples([5,12,13],'P'))	
-	print(ppt.gen_child_triples([20,21,29],'B'))	
-	print(ppt.gen_child_triples([8,15,17],'P'))
+	print(ppt.gen_child_triples([15,8,17],'P'))	
+	print(ppt.gen_child_triples([7,24,25],'P'))	
 	
-	print(ppt.euclid_sequence([2,1],5))
+	#print(ppt.euclid_triples([20,21,29]))
 	
 	return 0
 
