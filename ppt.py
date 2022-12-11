@@ -70,11 +70,13 @@ class PPT():
 						self.q[1][row] += self.B[row][col] * self.p[col]
 						self.q[2][row] += self.C[row][col] * self.p[col]
 				self.q[3] = triple
+				'''
 				# Adjust format of result if required
 				if self.q[0] > self.q[1]:
 					self.q[0] ^= self.q[1]
 					self.q[1] ^= self.q[0]
 					self.q[0] ^= self.q[1]
+				'''
 				return self.q
 							
 			elif selector == 'P':	# Matrix due to H Lee Price
@@ -87,11 +89,13 @@ class PPT():
 						self.q[1][row] += self.PB[row][col] * self.p[col]
 						self.q[2][row] += self.PC[row][col] * self.p[col]
 				self.q[3] = triple
+				'''
 				# Adjust format of result if required
 				if self.q[0] > self.q[1]:
 					self.q[0] ^= self.q[1]
 					self.q[1] ^= self.q[0]
 					self.q[0] ^= self.q[1]
+				'''
 				return self.q
 							
 			else:
